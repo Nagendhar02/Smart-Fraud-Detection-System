@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}New Transaction - FraudGuard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-credit-card"></i> New Transaction
+                </h4>
+                <small class="text-muted">Complete your purchase securely</small>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="transactionForm">
+                    <!-- Item Details -->
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-bag"></i> Item Details
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label for="item_name" class="form-label">Item Name</label>
+                            <input type="text" class="form-control" id="item_name" name="item_name" 
+                                   placeholder="Enter item name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="item_category" class="form-label">Category</label>
+                            <select class="form-select" id="item_category" name="item_category" required>
+                                <option value="">Select category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Books">Books</option>
+                                <option value="Home & Garden">Home & Garden</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Toys">Toys</option>
+                                <option value="Food">Food</option>
+                                <option value="Health">Health</option>
+                                <option value="Automotive">Automotive</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amount" name="amount" 
+                                       step="0.01" min="0.01" max="200000" placeholder="0.00" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Details -->
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-credit-card-2-front"></i> Payment Details
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label for="card_number" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="card_number" name="card_number" 
+                                   placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            <div class="form-text">
+                                <i class="bi bi-shield-check"></i> This is a demo - no real payment processing
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="expiry" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry" placeholder="MM/YY" 
+                                       maxlength="5" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" placeholder="123" 
+                                       maxlength="4" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Notice -->
+                    <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="bi bi-shield-shaded me-2"></i>
+                        <div>
+                            <strong>Fraud Detection Active:</strong> This transaction will be analyzed for 
+                            suspicious patterns including location, amount, and behavioral factors.
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-shield-check"></i> Process Transaction Securely
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Security Information -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <i class="bi bi-geo-alt text-success" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2">Location Verified</h6>
+                        <small class="text-muted">Transaction location is being monitored</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cpu text-info" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2">AI Analysis</h6>
+                        <small class="text-muted">Behavioral patterns being analyzed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Format card number input
+document.getElementById('card_number').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    e.target.value = formattedValue;
+});
+
+// Format expiry date
+document.getElementById('expiry').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    e.target.value = value;
+});
+
+// CVV numeric only
+document.getElementById('cvv').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g, '');
+});
+
+// Form submission with loading state
+document.getElementById('transactionForm').addEventListener('submit', function(e) {
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

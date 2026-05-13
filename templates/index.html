@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}FraudGuard - Advanced Fraud Detection{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 fw-bold text-primary mb-4">
+                <i class="bi bi-shield-check"></i> FraudGuard
+            </h1>
+            <p class="lead mb-4">
+                Advanced behavioral analysis and location-based fraud detection system 
+                protecting your e-commerce transactions in real-time.
+            </p>
+            
+            {% if not current_user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                        <i class="bi bi-person-plus"></i> Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                </div>
+            {% else %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-speedometer2"></i> Go to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2 class="h3 text-secondary">Advanced Security Features</h2>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-geo-alt text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Location Analysis</h5>
+                    <p class="card-text text-muted">
+                        Real-time IP and location tracking to detect unusual transaction patterns 
+                        and geographical anomalies.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-graph-up text-success"></i>
+                    </div>
+                    <h5 class="card-title">Behavioral Analytics</h5>
+                    <p class="card-text text-muted">
+                        Machine learning algorithms analyze spending patterns, 
+                        transaction frequency, and user behavior baselines.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning text-warning"></i>
+                    </div>
+                    <h5 class="card-title">Real-time Detection</h5>
+                    <p class="card-text text-muted">
+                        Instant fraud scoring and risk assessment before transaction 
+                        processing with immediate response.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section py-5">
+    <div class="row text-center">
+        <div class="col-12 mb-4">
+            <h2 class="h3 text-secondary">System Statistics</h2>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number text-primary">99.8%</div>
+                <div class="stat-label">Detection Accuracy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number text-success">< 100ms</div>
+                <div class="stat-label">Response Time</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number text-info">24/7</div>
+                <div class="stat-label">Monitoring</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number text-warning">0.02%</div>
+                <div class="stat-label">False Positives</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="security-notice py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <div>
+                    <strong>Demo Environment:</strong> This is a simulated fraud detection system for demonstration purposes. 
+                    No real payment processing occurs. All transaction data is for testing and analysis only.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

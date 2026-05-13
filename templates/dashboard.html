@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FraudGuard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h3">
+            <i class="bi bi-speedometer2"></i> Dashboard
+            <small class="text-muted">Welcome back, {{ current_user.username }}</small>
+        </h1>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('transaction') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Transaction
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card bg-primary">
+            <div class="stat-content">
+                <div class="stat-number">{{ total_transactions }}</div>
+                <div class="stat-label">Total Transactions</div>
+                <i class="bi bi-credit-card stat-icon"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card bg-success">
+            <div class="stat-content">
+                <div class="stat-number">{{ total_transactions - flagged_transactions - blocked_transactions }}</div>
+                <div class="stat-label">Approved</div>
+                <i class="bi bi-check-circle stat-icon"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card bg-warning">
+            <div class="stat-content">
+                <div class="stat-number">{{ flagged_transactions }}</div>
+                <div class="stat-label">Flagged</div>
+                <i class="bi bi-exclamation-triangle stat-icon"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card bg-danger">
+            <div class="stat-content">
+                <div class="stat-number">{{ blocked_transactions }}</div>
+                <div class="stat-label">Blocked</div>
+                <i class="bi bi-x-circle stat-icon"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history"></i> Recent Transactions
+                </h5>
+                <span class="badge bg-secondary">Last 10 transactions</span>
+            </div>
+            <div class="card-body">
+                {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Item</th>
+                                    <th>Amount</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Risk Score</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ transaction.item_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">${{ "%.2f"|format(transaction.amount) }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ transaction.item_category }}</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt"></i> {{ transaction.location or 'Unknown' }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="risk-score">
+                                            {% set risk_percentage = (transaction.fraud_score * 100)|round|int %}
+                                            <div class="progress" style="height: 8px; width: 60px;">
+                                                <div class="progress-bar 
+                                                    {% if risk_percentage < 30 %}bg-success
+                                                    {% elif risk_percentage < 60 %}bg-warning
+                                                    {% else %}bg-danger{% endif %}" 
+                                                    style="width: {{ risk_percentage }}%"></div>
+                                            </div>
+                                            <small class="text-muted">{{ risk_percentage }}%</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ transaction.get_status_color() }}">
+                                            {% if transaction.status == 'approved' %}
+                                                <i class="bi bi-check-circle"></i>
+                                            {% elif transaction.status == 'flagged' %}
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                            {% elif transaction.status == 'blocked' %}
+                                                <i class="bi bi-x-circle"></i>
+                                            {% else %}
+                                                <i class="bi bi-clock"></i>
+                                            {% endif %}
+                                            {{ transaction.status.title() }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-credit-card text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No Transactions Yet</h5>
+                        <p class="text-muted">Start by creating your first transaction to see it here.</p>
+                        <a href="{{ url_for('transaction') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create Transaction
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Status -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-shield-check"></i> Security Status
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Account Security</span>
+                    <span class="badge bg-success">Secure</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Behavior Baseline</span>
+                    <span class="badge bg-{{ 'success' if total_transactions > 5 else 'warning' }}">
+                        {{ 'Established' if total_transactions > 5 else 'Learning' }}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Location Tracking</span>
+                    <span class="badge bg-info">Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle"></i> Quick Tips
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i>
+                        Transactions from known locations are less likely to be flagged
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success"></i>
+                        Regular transaction patterns help establish your baseline
+                    </li>
+                    <li class="mb-0">
+                        <i class="bi bi-check-circle text-success"></i>
+                        Contact support if legitimate transactions are blocked
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
